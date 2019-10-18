@@ -85,5 +85,6 @@ exclude:
   - README.md
   - CNAME
 
-site.baseurl: https://wujiezhang05.github.io/wujie.github.io/
+site:
+  baseurl: https://wujiezhang05.github.io/wujie.github.io/
 
