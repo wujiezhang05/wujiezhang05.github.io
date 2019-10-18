@@ -13,8 +13,10 @@ description: 记录点滴，分享点滴，期望彼此收获些什么
 　　　　{% for post in site.posts %}
 　　　　　　<li>{{ post.date | date_to_string }} <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></li>
             <main id="content" class="main-content" role="main">
-                <li> {{ post.content | truncatewords:30, '.' }} </li>
-                <li><a href="{{ site.baseurl }}{{ post.url }}">阅读全文</a></li>
+                <li> {{ post.content | truncatewords:20, ' ' }} </li>
+                <div>
+                	<a href="{{ site.baseurl }}{{ post.url }}">阅读全文</a>
+                </div>
             </main>
 　　　　{% endfor %}
 
