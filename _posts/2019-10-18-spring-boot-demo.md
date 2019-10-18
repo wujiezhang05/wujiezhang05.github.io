@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Spring boot的学习和思考
+excerpt: 微服务时代，springboot以约定大于配置的设计理念，简化了之前臃肿的配置方式，大大提高饿了开发效率.让我们通过一个例子来学习分析下
 category: Java
 ---
 
@@ -79,7 +80,7 @@ public class Application {
 
 
 启动applicaton，在浏览器中输入URL， 如图<br/>
-![](https://wujiezhang05.github.io/wujie.github.io/images/springboot/url.PNG)
+![]({{ site.url }}/images/springboot/url.PNG)
 
 ## 单元测试
 

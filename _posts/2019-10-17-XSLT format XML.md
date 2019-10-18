@@ -1,6 +1,7 @@
 ---
 layout: default
 title: 使用XSLT 格式化 XML
+excerpt: 在平常工作中经常遇到要求对 XML 进行格式化的情况， XSLT相比较于写纯java代码操作 org.w3c.dom.Document 更加方便，利于维护。下面会用一个java例子来介绍XSLT的基本用法。
 category: Java
 ---
 

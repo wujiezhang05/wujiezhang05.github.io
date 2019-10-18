@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+
+    
+    <meta charset="UTF-8">
+
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Python Import 和 From import</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="Python Import 和 From import" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="由于Python Import 和 From import 的不同机制，会导致很多预料不到的错误。总结归纳了一下可能的问题 和 解决办法" />
+<meta property="og:description" content="由于Python Import 和 From import 的不同机制，会导致很多预料不到的错误。总结归纳了一下可能的问题 和 解决办法" />
+<link rel="canonical" href="http://localhost:4000/python/2019/10/17/python-import-vs-from-import.html" />
+<meta property="og:url" content="http://localhost:4000/python/2019/10/17/python-import-vs-from-import.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-10-17T00:00:00+08:00" />
+<script type="application/ld+json">
+{"description":"由于Python Import 和 From import 的不同机制，会导致很多预料不到的错误。总结归纳了一下可能的问题 和 解决办法","@type":"BlogPosting","url":"http://localhost:4000/python/2019/10/17/python-import-vs-from-import.html","headline":"Python Import 和 From import","dateModified":"2019-10-17T00:00:00+08:00","datePublished":"2019-10-17T00:00:00+08:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/python/2019/10/17/python-import-vs-from-import.html"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+  </head>
+  <body>
+    <a id="skip-to-content" href="#content">Skip to the content.</a>
+
+    <header class="page-header" role="banner">
+      <h1 class="project-name">Python  Import 和 From import</h1>
+      <h2 class="project-tagline"></h2>
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <blockquote>
+  <p>由于Python  Import 和 From import 的不同机制，会导致很多预料不到的错误。总结归纳了一下可能的问题 和 解决办法</p>
+</blockquote>
+
+<hr />
+
+<p>问题：</p>
+<ol>
+  <li>命名空间污染</li>
+  <li>循环import</li>
+</ol>
+
+<h3 id="命名空间污染">命名空间污染</h3>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># a.py
+</span><span class="k">def</span> <span class="nf">say</span><span class="p">():</span>
+    <span class="k">print</span> <span class="s">'Hi, Here is a'</span>
+<span class="c1"># b.py
+</span><span class="k">def</span> <span class="nf">say</span><span class="p">():</span>
+    <span class="k">print</span> <span class="s">'Hi, Here is b'</span>
+<span class="kn">from</span> <span class="nn">a</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+    <span class="n">say</span><span class="p">()</span>
+</code></pre></div></div>
+<p>执行结果：</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Hi, Here is a
+</code></pre></div></div>
+<p>原理：</p>
+<ul>
+  <li>import a:  将 “a” 引入到当前名字空间。</li>
+  <li>from a import * ： 不将 “a” 引入，而将 a module 中所有的属性的名字引入。虽然这样 可以直接调用 a module 中的方法，但也可能覆盖了其他同名的方法或属性。 慎用</li>
+</ul>
+
+<h3 id="循环import">循环import</h3>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># module_1/a.py
+</span><span class="kn">from</span> <span class="nn">module_2</span> <span class="kn">import</span> <span class="n">b</span>
+<span class="k">print</span> <span class="s">'Here is a'</span>
+<span class="c1"># module_2/b.py
+</span><span class="kn">from</span> <span class="nn">module_1</span> <span class="kn">import</span> <span class="n">a</span>
+<span class="k">print</span> <span class="s">'Here is b'</span>
+<span class="c1"># test.py
+</span><span class="kn">import</span> <span class="nn">module_1.a</span>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+    <span class="k">print</span> <span class="s">''</span>
+</code></pre></div></div>
+<p>执行 test.py 会发现如下错误：</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Traceback (most recent call last):
+  File "C:/PycharmProjects/Study/mytest.py", line 4, in &lt;module&gt;
+    import module_1.a
+  File "C:\PycharmProjects\Study\module_1\a.py", line 4, in &lt;module&gt;
+    from module_2 import b
+  File "C:\PycharmProjects\Study\module_2\b.py", line 4, in &lt;module&gt;
+    from module_1 import a
+ImportError: cannot import name a
+</code></pre></div></div>
+<p>但如果把a b两个文件中的 from…import 换成 import， 就不会这个错误。这是为什么呢？
+原因是</p>
+
+<ul>
+  <li>import 语句执行时， 会检查下 需要import的module 在不在 sys.modules 里。
+不在： create  一个新的entry 在sys.modules 里，然后去执行需要导入module里的代码块 直到执行完毕
+在 ： 直接返回。而不管这个module是否完全加载（即该module中代码都被执行过）</li>
+  <li>from … import 语句执行时，会要求被导入的module 已经被执行编译过。 
+这就解释了为什么 在 module2.b module 中，执行 from…import a 是被（a 没有执行完毕）， import moudle_1.a 可以成功（a module已经在之前被放入 sys.modules 里）。</li>
+</ul>
+
+<p>在pycharm里debug打断点验证过。</p>
+
+<p>慎用from….import.</p>
+
+
+      <footer class="site-footer">
+        
+      </footer>
+    </main>
+  </body>
+</html>
