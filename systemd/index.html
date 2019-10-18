@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Systemd探究 – Your Name – Web Developer from Somewhere</title>
+
+        <meta charset="utf-8" />
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
+
+    
+    <meta name="description" content="systemd： Linux的初始化系统。管理Linux 所有初始化进程（process ID 为1）的系统。1. 在server启动时，自动启动一些服务（sshd，firewall）等，2. 在server shutdown时，关闭这些服务。" />
+    <meta property="og:description" content="systemd： Linux的初始化系统。管理Linux 所有初始化进程（process ID 为1）的系统。1. 在server启动时，自动启动一些服务（sshd，firewall）等，2. 在server shutdown时，关闭这些服务。" />
+    
+    <meta name="author" content="Your Name" />
+
+    
+    <meta property="og:title" content="Systemd探究" />
+    <meta property="twitter:title" content="Systemd探究" />
+    
+
+    <!--[if lt IE 9]>
+      <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <link rel="stylesheet" type="text/css" href="/style.css" />
+    <link rel="alternate" type="application/rss+xml" title="Your Name - Web Developer from Somewhere" href="/feed.xml" />
+
+    <!-- Created with Jekyll Now - http://github.com/barryclark/jekyll-now -->
+  </head>
+
+  <body>
+    <div class="wrapper-masthead">
+      <div class="container">
+        <header class="masthead clearfix">
+          <a href="/" class="site-avatar"><img src="https://raw.githubusercontent.com/barryclark/jekyll-now/master/images/jekyll-logo.png" /></a>
+
+          <div class="site-info">
+            <h1 class="site-name"><a href="/">Your Name</a></h1>
+            <p class="site-description">Web Developer from Somewhere</p>
+          </div>
+
+          <nav>
+            <a href="/">Blog</a>
+            <a href="/about">About</a>
+          </nav>
+        </header>
+      </div>
+    </div>
+
+    <div id="main" role="main" class="container">
+      <h1 id="systemd">Systemd</h1>
+
+<blockquote>
+  <p>systemd： Linux的初始化系统。管理Linux 所有初始化进程（process ID 为1）的系统。</p>
+  <ol>
+    <li>在server启动时，自动启动一些服务（sshd，firewall）等，</li>
+    <li>在server shutdown时，关闭这些服务。</li>
+  </ol>
+</blockquote>
+
+<hr />
+
+<h2 id="结构">结构</h2>
+
+<p><img src="http://localhost:4000/images/systemd/systemd_structure.png" alt="" /></p>
+
+<ol>
+  <li>利用linux的crgoups来跟踪任务，当服务停止时，会通过查询cgroups找到所有相关的进程，从而干净的停止服务。
+    <ul>
+      <li>cgroups : 进程创建子进程时，子进程会继承父进程的cgroups。所以service不管怎么启动新的进程，所有的进程都会属于一个cgroups</li>
+    </ul>
+  </li>
+  <li>
+    <p>启动挂载点和自动挂载的管理</p>
+  </li>
+  <li>实现事务性依赖关系管理</li>
+</ol>
+
+<h2 id="unit-单元">unit 单元</h2>
+<p>系统初始化要做很多事情，systemd把每一步都抽象为一个unit 配置单元，常见的配置单元</p>
+
+<ol>
+  <li>service: 代表一个后台进程。如mysql</li>
+  <li>socket： 封装系统和互联网中的一个套接字，systemd支持流式，数据报，连续包的AF_INET,AF_INET6,AF_UNIX socket,
+每一个套接字配置单元都有一个对应的service unit，对应的service会在第一个“连接”进入套接字时启动（如nscd.socket 在有新的连接后会启动nscd.service）</li>
+  <li>device: 封装一个存在于linux设备树中的设备，每一个使用udev规则标记的设备在systemd中作为一个device unit出现</li>
+  <li>target： 此类unit为其他unit进行逻辑分组，他们本身并不做什么，只是引用其他unit。如图形化界面的初始化需要很多unit，讲这些unit的组合组合为一个target。</li>
+</ol>
+
+<p>命令显示units 文件所在的路径。</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>systemctl show <span class="nt">--property</span><span class="o">=</span>UnitPath
+</code></pre></div></div>
+<p><strong>/usr/lib/systemd/system/</strong> 软件包安装的unit
+<strong>/etc/systemd/system/</strong>  系统管理员安装的unit</p>
+
+<h3 id="unit的-依赖关系">unit的 依赖关系</h3>
+<p>systemd解除了大量启动工作的依赖关系，让unit可以并发启动。但有些unit确实存在依赖关系，可以在unit的定义中使用 <strong>require</strong> 来声明依赖关系。</p>
+
+<h2 id="troubleshooting">troubleshooting</h2>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 寻找启动失败的unit</span>
+systemctl <span class="nt">--state</span><span class="o">=</span>failed
+<span class="c"># 寻找启动失败的unit</span>
+journalctl <span class="nt">-fp</span> err
+
+<span class="c">#查看unit systemd-modules-load的状态</span>
+systemctl status systemd-modules-load
+
+<span class="c">#通过PID 查询错误内容</span>
+journalctl <span class="nt">-b</span> <span class="nv">_PID</span><span class="o">=</span>15630
+
+</code></pre></div></div>
+<p>debug一个unit。在此unit的配置文件中加</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>Service]
+<span class="nv">Environment</span><span class="o">=</span><span class="nv">SYSTEMD_LOG_LEVEL</span><span class="o">=</span>debug
+</code></pre></div></div>
+
+    </div>
+
+    <div class="wrapper-footer">
+      <div class="container">
+        <footer class="footer">
+          
+
+
+
+<a href="https://github.com/barryclark/jekyll-now"><i class="svg-icon github"></i></a>
+
+
+
+
+<a href="https://www.twitter.com/jekyllrb"><i class="svg-icon twitter"></i></a>
+
+
+
+        </footer>
+      </div>
+    </div>
+
+    
+
+  </body>
+</html>

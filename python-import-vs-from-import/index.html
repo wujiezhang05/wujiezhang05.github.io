@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Python  Import 和 From import – Your Name – Web Developer from Somewhere</title>
+
+        <meta charset="utf-8" />
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
+
+    
+    <meta name="description" content="由于Python  Import 和 From import 的不同机制，会导致很多预料不到的错误。总结归纳了一下可能的问题 和 解决办法" />
+    <meta property="og:description" content="由于Python  Import 和 From import 的不同机制，会导致很多预料不到的错误。总结归纳了一下可能的问题 和 解决办法" />
+    
+    <meta name="author" content="Your Name" />
+
+    
+    <meta property="og:title" content="Python  Import 和 From import" />
+    <meta property="twitter:title" content="Python  Import 和 From import" />
+    
+
+    <!--[if lt IE 9]>
+      <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <link rel="stylesheet" type="text/css" href="/style.css" />
+    <link rel="alternate" type="application/rss+xml" title="Your Name - Web Developer from Somewhere" href="/feed.xml" />
+
+    <!-- Created with Jekyll Now - http://github.com/barryclark/jekyll-now -->
+  </head>
+
+  <body>
+    <div class="wrapper-masthead">
+      <div class="container">
+        <header class="masthead clearfix">
+          <a href="/" class="site-avatar"><img src="https://raw.githubusercontent.com/barryclark/jekyll-now/master/images/jekyll-logo.png" /></a>
+
+          <div class="site-info">
+            <h1 class="site-name"><a href="/">Your Name</a></h1>
+            <p class="site-description">Web Developer from Somewhere</p>
+          </div>
+
+          <nav>
+            <a href="/">Blog</a>
+            <a href="/about">About</a>
+          </nav>
+        </header>
+      </div>
+    </div>
+
+    <div id="main" role="main" class="container">
+      <blockquote>
+  <p>由于Python  Import 和 From import 的不同机制，会导致很多预料不到的错误。总结归纳了一下可能的问题 和 解决办法</p>
+</blockquote>
+
+<hr />
+
+<p>问题：</p>
+<ol>
+  <li>命名空间污染</li>
+  <li>循环import</li>
+</ol>
+
+<h3 id="命名空间污染">命名空间污染</h3>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># a.py
+</span><span class="k">def</span> <span class="nf">say</span><span class="p">():</span>
+    <span class="k">print</span> <span class="s">'Hi, Here is a'</span>
+<span class="c1"># b.py
+</span><span class="k">def</span> <span class="nf">say</span><span class="p">():</span>
+    <span class="k">print</span> <span class="s">'Hi, Here is b'</span>
+<span class="kn">from</span> <span class="nn">a</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+    <span class="n">say</span><span class="p">()</span>
+</code></pre></div></div>
+<p>执行结果：</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Hi, Here is a
+</code></pre></div></div>
+<p>原理：</p>
+<ul>
+  <li>import a:  将 “a” 引入到当前名字空间。</li>
+  <li>from a import * ： 不将 “a” 引入，而将 a module 中所有的属性的名字引入。虽然这样 可以直接调用 a module 中的方法，但也可能覆盖了其他同名的方法或属性。 慎用</li>
+</ul>
+
+<h3 id="循环import">循环import</h3>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># module_1/a.py
+</span><span class="kn">from</span> <span class="nn">module_2</span> <span class="kn">import</span> <span class="n">b</span>
+<span class="k">print</span> <span class="s">'Here is a'</span>
+<span class="c1"># module_2/b.py
+</span><span class="kn">from</span> <span class="nn">module_1</span> <span class="kn">import</span> <span class="n">a</span>
+<span class="k">print</span> <span class="s">'Here is b'</span>
+<span class="c1"># test.py
+</span><span class="kn">import</span> <span class="nn">module_1.a</span>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+    <span class="k">print</span> <span class="s">''</span>
+</code></pre></div></div>
+<p>执行 test.py 会发现如下错误：</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Traceback (most recent call last):
+  File "C:/PycharmProjects/Study/mytest.py", line 4, in &lt;module&gt;
+    import module_1.a
+  File "C:\PycharmProjects\Study\module_1\a.py", line 4, in &lt;module&gt;
+    from module_2 import b
+  File "C:\PycharmProjects\Study\module_2\b.py", line 4, in &lt;module&gt;
+    from module_1 import a
+ImportError: cannot import name a
+</code></pre></div></div>
+<p>但如果把a b两个文件中的 from…import 换成 import， 就不会这个错误。这是为什么呢？
+原因是</p>
+
+<ul>
+  <li>import 语句执行时， 会检查下 需要import的module 在不在 sys.modules 里。
+不在： create  一个新的entry 在sys.modules 里，然后去执行需要导入module里的代码块 直到执行完毕
+在 ： 直接返回。而不管这个module是否完全加载（即该module中代码都被执行过）</li>
+  <li>from … import 语句执行时，会要求被导入的module 已经被执行编译过。 
+这就解释了为什么 在 module2.b module 中，执行 from…import a 是被（a 没有执行完毕）， import moudle_1.a 可以成功（a module已经在之前被放入 sys.modules 里）。</li>
+</ul>
+
+<p>在pycharm里debug打断点验证过。</p>
+
+<p>慎用from….import.</p>
+
+    </div>
+
+    <div class="wrapper-footer">
+      <div class="container">
+        <footer class="footer">
+          
+
+
+
+<a href="https://github.com/barryclark/jekyll-now"><i class="svg-icon github"></i></a>
+
+
+
+
+<a href="https://www.twitter.com/jekyllrb"><i class="svg-icon twitter"></i></a>
+
+
+
+        </footer>
+      </div>
+    </div>
+
+    
+
+  </body>
+</html>
