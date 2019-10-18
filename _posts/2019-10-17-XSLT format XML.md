@@ -1,6 +1,7 @@
 ---
 layout: default
 title: 使用XSLT 格式化 XML
+category: Java
 ---
 
 #使用 XSLT  格式化 XML

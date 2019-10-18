@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Python  Import 和 From import
+category: Python
 ---
 > 由于Python  Import 和 From import 的不同机制，会导致很多预料不到的错误。总结归纳了一下可能的问题 和 解决办法
 

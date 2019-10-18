@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Java clean code
+category: Java
 ---
 
 > 好代码--可以让人用更少的时间去理解ta。

@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Spring boot的学习和思考
+category: Java
 ---
 
 # Spring boot的学习和思考
