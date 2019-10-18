@@ -14,9 +14,7 @@ description: 记录点滴，分享点滴，期望彼此收获些什么
 　　　　　　<li>{{ post.date | date_to_string }} <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></li>
             <main id="content" class="main-content" role="main">
                 <div> {{ post.content | truncatewords:20, ' ' }} </div>
-                <div>
-                	<a href="{{ site.baseurl }}{{ post.url }}">阅读全文</a>
-                </div>
+                <a href="{{ site.baseurl }}{{ post.url }}">阅读全文</a>
             </main>
 　　　　{% endfor %}
 
