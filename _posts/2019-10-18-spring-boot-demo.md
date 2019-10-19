@@ -3,13 +3,7 @@ title: Spring boot的学习和思考
 excerpt: 微服务时代，springboot以约定大于配置的设计理念，简化了之前臃肿的配置方式，大大提高饿了开发效率.让我们通过一个例子来学习分析下
 category: Java
 last_modified_at: 2017-03-09T10:27:01-05:00
-tags: 
-  - code
-  - syntax highlighting
-
 ---
-
-# Spring boot的学习和思考
 
 > 微服务时代，springboot以约定大于配置的设计理念，简化了之前臃肿的配置方式，大大提高饿了开发效率
 > 让我们通过一个例子来学习下

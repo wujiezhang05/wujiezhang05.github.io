@@ -19,7 +19,7 @@ remote_theme: mmistakes/so-simple-theme
 
 locale: en-US
 title: "So Simple"
-description: "A simple Jekyll theme for words and pictures."
+description: "愿你出走半生,归来仍是少年"
 #baseurl: "/so-simple-theme"
 url: "https://mmistakes.github.io"
 logo: "/images/so-simple-site-logo.png"
@@ -106,32 +106,17 @@ defaults:
 
 # Site Author
 author:
-  name: Michael Rose
-  picture: /images/michael-rose-photo.jpg
+  name: Wujie Zhang
+  picture: favicon.jpg
   email:
   twitter: mmistakes
   links:
-    - title: Twitter
-      url: https://twitter.com/mmistakes
-      icon: fab fa-twitter-square
-    - title: Instagram
-      url: https://instagram.com/mmistakes
-      icon: fab fa-instagram
     - title: GitHub
-      url: https://github.com/mmistakes
+      url: https://github.com/wujiezhang05
       icon: fab fa-github-square
 
 # Footer Links
 footer_links:
-  - title: Twitter
-    url: https://twitter.com/mmistakes
-    icon: fab fa-twitter-square
-  - title: Instagram
-    url: https://instagram.com/mmistakes
-    icon: fab fa-instagram
   - title: GitHub
-    url: https://github.com/mmistakes
+    url: https://github.com/wujiezhang05
     icon: fab fa-github-square
-  - title: Feed
-    url: atom.xml
-    icon: fas fa-rss-square
