@@ -175,7 +175,7 @@ Fetching config from server at : http://localhost:1111/
 ```
 启动后之后。浏览器输入 http://localhost:2222/ 如下
 
-![]({{ site.url }}/images/springcloud/spring-eureka-server.png)
+![]({{ site.url }}/images/springcloud/spring-eureka-server.PNG)
 
 我们从config server正确的获取了discovery-server.yml 并按照获取的配置内容 启动在了 2222 端口。上图可以看到 没有其他 service 注册到这里。我们继续往下
 
@@ -248,7 +248,7 @@ eureka:
 在浏览器输入： http://localhost:3333/ 会出现 **Hello** 的字样。 程序从config server中获取了配置 并启动在了 3333 端口。
 
 刷新下 http://localhost:2222/， 就能看到
-![]({{ site.url }}/images/springcloud/simple-service-eureka.png)
+![]({{ site.url }}/images/springcloud/simple-service-eureka.PNG)
 
 service也注册到了注册中心中。
 
