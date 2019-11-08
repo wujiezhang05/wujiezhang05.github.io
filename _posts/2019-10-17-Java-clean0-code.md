@@ -1,6 +1,5 @@
 ---
 title: Java clean code
-excerpt: 好代码--可以让人用更少的时间去理解ta。
 category: Java
 ---
 

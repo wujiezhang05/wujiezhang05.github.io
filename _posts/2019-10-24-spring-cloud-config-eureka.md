@@ -1,10 +1,10 @@
 ---
 title: spring cloud 配置中心 config + 服务发现注册中心 eureka
-excerpt: spring cloud config 和 netflix eureka是spring cloud很重要的组件，通过一个例子来学习他们。
 category: Java
 tags: spring
 ---
 
+ > spring cloud config 和 netflix eureka是spring cloud很重要的组件，通过一个例子来学习他们。
  > spring cloud: 整合了一系列成熟的微服务框架，并用springboot的方式进行封装，
  > 屏蔽掉复杂的实现配置过程。从而可以低成本的搭建高效，分布式，容错微服务平台。
  > 通过一个例子来了解下spring cloud config 和 spring cloud eureka
