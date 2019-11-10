@@ -86,7 +86,8 @@ thymeleaf 的HTML模板文件在resources/templates目录下
 ## GUI ---thymeleaf
 
 login.html: 为了节省篇幅，一些外部资源文件CSS JS等的引入没有显示。
-```HTML
+
+```html
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <form class="login100-form validate-form" method="post" th:action="@{/login}">
   <div class="wrap-input100 validate-input m-b-26" data-validate="Username is required">
@@ -142,7 +143,8 @@ login的submit按钮会出发 th:action="@(/login)"，也即出发 login的post 
 
 ## Backend processor --spring boot security
 我们来看project的入口类SecurityApplication
-```Java
+
+```java
 @SpringBootApplication
 @Controller
 public class SecurityApplication {
@@ -306,7 +308,8 @@ public class UserPrincipal implements UserDetails {
 
 ## dataRepository --spring data JPA
 dataSource是在这里定义的。我们来看 UserConfiguration
-```Java
+
+```java
 @Configuration
 @ComponentScan
 @EntityScan("com.myself.study.database")
@@ -363,7 +366,7 @@ spring.jpa.database: H2
 spring.jpa.show-sql: true
 ```
 UserDataRepository
-```Java
+```java
 public interface UserRepository extends Repository<User, String> {
 
     public User findByUsername(String username);
