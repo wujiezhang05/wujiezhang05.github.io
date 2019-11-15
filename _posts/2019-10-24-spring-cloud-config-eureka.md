@@ -18,7 +18,14 @@ tags: spring
 
 下面是我们的例子：
 
-![]({{ site.url }}/images/springcloud/config_discovery.png)
+```mermaid
+graph LR
+A(Discovery Server) --read config--> B(Config Server)
+C[Micro Service-1] --read config--> B
+D[Micro Service-2] --read config--> B
+C --registe--> A
+D --registe--> A
+```
 
 1. 所有的微服务都会向配置中心（config server）读取配置文件。
 2. 微服务都会注册到discovery server中。

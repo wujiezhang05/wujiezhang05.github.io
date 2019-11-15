@@ -13,7 +13,15 @@ tags: spring
 
 例子中的源码在github: [spring-cloud-bus-kafka](https://github.com/wujiezhang05/spring-cloud-study)
 
-![]({{ site.url }}/images/springcloud-bus/spring-bus-overall.png)
+```mermaid
+graph LR
+A[git server] --- B[config server]
+B --send notification--> C[spring cloud bus]
+C --send notification--> D[micro service one]
+C --send notification--> E[micro service two]
+D --refetch configuration--> B
+E --refetch configuration--> B
+```
 
 
 ## config server

@@ -10,7 +10,11 @@ tags: spring
 
 我们用着三个组件完成一个小的login实例.
 
-![]({{ site.url }}/images/springsecurity/spring-security.jpg)
+```mermaid
+graph TD
+A[GUI] --login request--> B[Backend Processor]
+B --query user--> C[dataRepository]
+```
 
 ## Overall
 
