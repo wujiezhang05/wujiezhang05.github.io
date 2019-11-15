@@ -44,6 +44,7 @@ E --refetch configuration--> B
         </dependency>
     </dependencies>
 ```
+
 application.yml
 ```yaml
 spring:
@@ -78,10 +79,13 @@ server:
 kafka 的下载(包含zookeeper)请看官网[kafka](https://kafka.apache.org/downloads),
 解压之后进入${kafka_home}/bin/windows（如果是liunux系统，进入${kafka_home}/bin/）
 1. 启动zookeeper
+
   ```shell
   zookeeper-server-start ..\..\config\zookeeper.properties
   ```
+
 2. 启动kafka
+  
   ```shell
   kafka-server-start ..\..\config\server.properties
   ```
